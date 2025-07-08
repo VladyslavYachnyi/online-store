@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Listings</title>
+  <style>
+    .product-card {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    img {
+      max-width: 200px;
+      max-height: 200px;
+    }
+  </style>
+</head>
+<body>
+<h2>My Products</h2>
+
+<div th:each="product : ${products}" class="product-card">
+  <a th:href="@{'/products/' + ${product.id}}" style="text-decoration:none; color:inherit;">
+    <h3 th:text="${product.name}">Product Name</h3>
+  </a>
+  <p><strong>Price:</strong> <span th:text="${product.price}"></span></p>
+  <img th:if="${product.imagePath != null}" th:src="@{${product.imagePath}}" alt="Product Image"><br>
+
+  <form th:action="@{'/products/delete/' + ${product.id}}" method="post">
+    <button type="submit">Delete</button>
+  </form>
+  <a th:href="@{'/products/edit/' + ${product.id}}">Edit</a>
+</div>
+
+<a href="/products/add">Add New Product</a><br>
+<a href="/products">Back to All Products</a>
+
+</body>
+</html>

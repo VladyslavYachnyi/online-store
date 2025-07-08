@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MyStore - Home</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+<header>
+  <nav>
+    <a href="/" class="logo">MyStore</a>
+
+    <!-- Поиск -->
+    <form action="/products" method="get" class="search-form">
+      <input type="text" name="query" placeholder="What are you looking for?">
+      <button type="submit">Search</button>
+    </form>
+
+    <!-- Навигация: разные ссылки для авторизованных и неавторизованных -->
+    <div class="nav-links">
+      <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/products/add}">Add Product</a>
+      <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/dashboard}">Profile</a>
+
+      <a th:if="${!#authorization.expression('isAuthenticated()')}" th:href="@{/login}">Add Product</a>
+      <a th:if="${!#authorization.expression('isAuthenticated()')}" th:href="@{/login}">Profile</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <h2>Recently Added</h2>
+
+  <div class="product-list" th:if="${recentProducts != null}">
+    <div class="product-card" th:each="product : ${recentProducts}">
+      <a th:href="@{'/products/' + ${product.id}}">
+        <img th:if="${product.imagePath != null}" th:src="@{${product.imagePath}}" alt="Product image">
+        <h3 th:text="${product.name}">Product Name</h3>
+        <p th:text="${product.price + ' $'}">0 $</p>
+      </a>
+    </div>
+  </div>
+</main>
+</body>
+</html>
