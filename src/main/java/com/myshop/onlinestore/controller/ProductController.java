@@ -39,17 +39,17 @@ public class ProductController {
             @RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
             @RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice,
             @RequestParam(name = "sort", required = false, defaultValue = "newest") String sort,
-            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "name", required = false) String name,
             Model model,
             Principal principal) {
 
-        List<Product> products = productService.findFilteredSortedAndSearched(minPrice, maxPrice, sort, keyword);
+        List<Product> products = productService.findFilteredSortedAndSearched(minPrice, maxPrice, sort, name);
 
         model.addAttribute("products", products);
         model.addAttribute("sort", sort);
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
-        model.addAttribute("keyword", keyword);
+        model.addAttribute("name", name);
 
         if (principal != null) {
             model.addAttribute("currentUserEmail", principal.getName());

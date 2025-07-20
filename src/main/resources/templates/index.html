@@ -12,7 +12,7 @@
 
     <!-- Поиск -->
     <form action="/products" method="get" class="search-form">
-      <input type="text" name="query" placeholder="What are you looking for?">
+      <input type="text" name="keyword" placeholder="What are you looking for?" th:value="${param.keyword}">
       <button type="submit">Search</button>
     </form>
 
@@ -30,12 +30,17 @@
 <main>
   <h2>Recently Added</h2>
 
-  <div class="product-list" th:if="${recentProducts != null}">
+  <div class="product-grid">
     <div class="product-card" th:each="product : ${recentProducts}">
-      <a th:href="@{'/products/' + ${product.id}}">
-        <img th:if="${product.imagePath != null}" th:src="@{${product.imagePath}}" alt="Product image">
-        <h3 th:text="${product.name}">Product Name</h3>
-        <p th:text="${product.price + ' $'}">0 $</p>
+      <a th:href="@{'/products/' + ${product.id}}" class="product-link">
+        <div class="product-image">
+          <img th:if="${product.imagePath != null}" th:src="@{${product.imagePath}}" alt="Product Image">
+        </div>
+        <div class="product-info">
+          <h3 th:text="${product.name}">Product Name</h3>
+          <p class="date" th:text="${#temporals.format(product.createdAt, 'dd.MM.yyyy')}">01.01.2025</p>
+        </div>
+        <div class="product-price" th:text="${product.price + ' $'}">0 $</div>
       </a>
     </div>
   </div>

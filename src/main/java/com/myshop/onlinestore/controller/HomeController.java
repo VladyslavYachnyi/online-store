@@ -21,7 +21,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String showHomePage(Model model) {
-        List<Product> recentProducts = productService.getRecentProducts(6);
+        List<Product> recentProducts = productService.getRecentProducts(4);
         model.addAttribute("recentProducts", recentProducts);
         return "index";
     }

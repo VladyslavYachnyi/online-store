@@ -97,3 +97,87 @@ main h2 {
     font-weight: bold;
     margin: 0;
 }
+
+.filter-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.filter-container form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.product-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 0 40px;
+}
+
+.product-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #1a1a1a; /* Чуть светлее */
+    border-radius: 8px;
+    height: 160px;
+    margin-bottom: 2px; /* Отступ между карточками */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Легкая тень для выделения */
+}
+
+.product-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    width: 100%;
+}
+
+.product-image {
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-image img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover;
+}
+
+.product-info {
+    padding-left: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 170px; /* Подогнанно под картинку */
+    color: #00ffff;
+}
+
+.product-info h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.product-info .date {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #00bfa5;
+}
+
+.product-price {
+    margin-left: auto;
+    white-space: nowrap;
+    font-size: 1.1rem;
+    color: #00bfa5;
+    font-weight: 600;
+}
+

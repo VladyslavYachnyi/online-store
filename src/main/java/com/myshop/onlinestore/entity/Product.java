@@ -80,4 +80,8 @@ public class Product {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 }

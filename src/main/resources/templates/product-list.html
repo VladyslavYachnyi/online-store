@@ -1,76 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Products</title>
-  <style>
-    .product-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .product-card {
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 10px;
-    }
-
-    .product-card img {
-      max-width: 200px;
-      max-height: 200px;
-    }
-  </style>
+  <title>All Products</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-<h2>All Products</h2>
 
-<form method="get" action="/products">
-  <label for="keyword">Search:</label>
-  <input type="text" name="keyword" id="keyword" th:value="${keyword}" placeholder="Name or description" />
+<header>
+  <nav>
+    <a href="/" class="logo">MyStore</a>
 
-  <label for="minPrice">Min Price:</label>
-  <input type="number" step="0.01" name="minPrice" id="minPrice" th:value="${minPrice}" />
 
-  <label for="maxPrice">Max Price:</label>
-  <input type="number" step="0.01" name="maxPrice" id="maxPrice" th:value="${maxPrice}" />
+    <!-- Навигация -->
+    <div class="nav-links">
+      <th:block th:if="${currentUserEmail}">
+        <a th:href="@{/products/add}">Add Product</a>
+        <a th:href="@{/products/my}">My Products</a>
+        <a th:href="@{/dashboard}">Profile</a>
+      </th:block>
+      <th:block th:unless="${currentUserEmail}">
+        <a th:href="@{/login}">Add Product</a>
+        <a th:href="@{/login}">Profile</a>
+      </th:block>
+    </div>
+  </nav>
+</header>
 
-  <label for="sort">Sort:</label>
-  <select name="sort" id="sort">
-    <option th:value="newest" th:selected="${sort == 'newest'}">Newest first</option>
-    <option th:value="oldest" th:selected="${sort == 'oldest'}">Oldest first</option>
-    <option th:value="priceAsc" th:selected="${sort == 'priceAsc'}">Price: Low to High</option>
-    <option th:value="priceDesc" th:selected="${sort == 'priceDesc'}">Price: High to Low</option>
-  </select>
+<main>
+  <h2 style="text-align: center;">All Products</h2>
 
-  <button type="submit">Apply</button>
-  <a href="/products"><button type="button">Clear</button></a>
-</form>
+  <!-- Фильтр -->
+  <div class="filter-container">
+    <form method="get" action="/products">
+      <input type="text" name="name" th:value="${name}" placeholder="Name or description">
+      <input type="number" name="minPrice" th:value="${minPrice}" placeholder="Min Price">
+      <input type="number" name="maxPrice" th:value="${maxPrice}" placeholder="Max Price">
+      <select name="sort">
+        <option value="newest" th:selected="${sort == 'newest'}">Newest first</option>
+        <option value="oldest" th:selected="${sort == 'oldest'}">Oldest first</option>
+        <option value="priceAsc" th:selected="${sort == 'priceAsc'}">Price: Low to High</option>
+        <option value="priceDesc" th:selected="${sort == 'priceDesc'}">Price: High to Low</option>
+      </select>
+      <button type="submit">Apply</button>
+      <a href="/products"><button type="button">Clear</button></a>
+    </form>
+  </div>
 
-<div class="product-grid">
-  <div class="product-card" th:each="product : ${products}">
-    <a th:href="@{'/products/' + ${product.id}}" style="text-decoration: none; color: inherit;">
-      <div>
-        <h3 th:text="${#strings.length(product.name) > 30} ? ${#strings.substring(product.name, 0, 30)} + '…' : ${product.name}"></h3>
-        <p><strong>Price:</strong> <span th:text="${product.price}"></span></p>
-        <p><strong>Seller:</strong> <span th:text="${product.user.username}"></span></p>
-      </div>
-      <div>
-        <img th:if="${product.imagePath != null}" th:src="@{${product.imagePath}}" alt="Product Image" />
-      </div>
-    </a>
-
-    <div th:if="${#authentication.name == product.user.email}">
-      <form th:action="@{'/products/delete/' + ${product.id}}" method="post">
-        <button type="submit">Delete</button>
-      </form>
-      <a th:href="@{'/products/edit/' + ${product.id}}">Edit</a>
+  <!-- Сетка товаров -->
+  <div class="product-grid">
+    <div class="product-card" th:each="product : ${products}">
+      <a th:href="@{'/products/' + ${product.id}}" class="product-link">
+        <div class="product-image">
+          <img th:if="${product.imagePath != null}" th:src="@{${product.imagePath}}" alt="Product Image">
+        </div>
+        <div class="product-info">
+          <h3 th:text="${product.name}">Product Name</h3>
+          <p class="date" th:text="${#temporals.format(product.createdAt, 'dd.MM.yyyy')}">01.01.2025</p>
+        </div>
+        <div class="product-price" th:text="${product.price + ' $'}">0 $</div>
+      </a>
     </div>
   </div>
-</div>
-
-<a href="/products/add">Add New Product</a>
-<a href="/products/my">My Listings</a>
+</main>
 
 </body>
 </html>
