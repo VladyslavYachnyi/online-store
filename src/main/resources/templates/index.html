@@ -10,19 +10,29 @@
   <nav>
     <a href="/" class="logo">MyStore</a>
 
-    <!-- Поиск -->
     <form action="/products" method="get" class="search-form">
-      <input type="text" name="keyword" placeholder="What are you looking for?" th:value="${param.keyword}">
+      <input type="text" name="name" placeholder="What are you looking for?" th:value="${param.name}">
       <button type="submit">Search</button>
     </form>
 
-    <!-- Навигация: разные ссылки для авторизованных и неавторизованных -->
     <div class="nav-links">
+      <a th:href="@{/products}">All Products</a>
       <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/products/add}">Add Product</a>
-      <a th:if="${#authorization.expression('isAuthenticated()')}" th:href="@{/dashboard}">Profile</a>
-
       <a th:if="${!#authorization.expression('isAuthenticated()')}" th:href="@{/login}">Add Product</a>
-      <a th:if="${!#authorization.expression('isAuthenticated()')}" th:href="@{/login}">Profile</a>
+
+      <div th:if="${#authorization.expression('isAuthenticated()')}" class="dropdown">
+        <a href="#" class="dropdown-toggle">Profile ▼</a>
+        <div class="dropdown-menu">
+          <a th:href="@{/profile}">My Profile</a>
+          <a th:href="@{/products/my}">My Products</a>
+          <a th:href="@{/logout}">Log Out</a>
+        </div>
+      </div>
+
+      <div th:if="${!#authorization.expression('isAuthenticated()')}" class="dropdown">
+        <a th:href="@{/login}" class="dropdown-toggle">Profile</a>
+      </div>
+
     </div>
   </nav>
 </header>

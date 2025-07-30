@@ -2,6 +2,8 @@ package com.myshop.onlinestore.controller;
 
 import com.myshop.onlinestore.entity.Product;
 import com.myshop.onlinestore.entity.User;
+import com.myshop.onlinestore.repository.ProductRepository;
+import com.myshop.onlinestore.repository.UserRepository;
 import com.myshop.onlinestore.service.ProductService;
 import com.myshop.onlinestore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -27,11 +28,15 @@ public class ProductController {
 
     private final ProductService productService;
     private final UserService userService;
+    private ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ProductController(ProductService productService, UserService userService) {
+    public ProductController(ProductService productService, UserService userService, ProductRepository productRepository,  UserRepository userRepository) {
         this.productService = productService;
         this.userService = userService;
+        this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -59,8 +64,13 @@ public class ProductController {
     }
 
     @GetMapping("/add")
-    public String showAddForm(Model model) {
+    public String showAddForm(Model model, Principal principal) {
         model.addAttribute("product", new Product());
+
+        if (principal != null) {
+            model.addAttribute("currentUserEmail", principal.getName());
+        }
+
         return "product-form";
     }
 
@@ -69,7 +79,7 @@ public class ProductController {
                              @RequestParam("image") MultipartFile imageFile,
                              Principal principal) throws IOException {
 
-        if (principal == null) { // защита от анонимных
+        if (principal == null) {
             return "redirect:/login";
         }
 
@@ -111,7 +121,7 @@ public class ProductController {
             }
         }
 
-        return "redirect:/products";
+        return "redirect:/products/my";
     }
 
     @GetMapping("/edit/{id}")
@@ -124,6 +134,9 @@ public class ProductController {
         }
 
         model.addAttribute("product", product);
+        if (principal != null) {
+            model.addAttribute("currentUserEmail", principal.getName());
+        }
         return "product-edit";
     }
 
@@ -153,14 +166,19 @@ public class ProductController {
         }
 
         productService.saveProduct(existingProduct);
-        return "redirect:/products";
+        return "redirect:/products/my";
     }
 
     @GetMapping("/{id}")
-    public String viewProductDetails(@PathVariable Long id, Model model) {
+    public String viewProductDetails(@PathVariable Long id, Model model, Principal principal) {
         Product product = productService.getProductById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + id));
         model.addAttribute("product", product);
+
+        if (principal != null) {
+            model.addAttribute("currentUserEmail", principal.getName());
+        }
+
         return "product-detail";
     }
 
@@ -174,10 +192,36 @@ public class ProductController {
         if (userOpt.isPresent()) {
             List<Product> userProducts = productService.getProductsByUserId(userOpt.get().getId());
             model.addAttribute("products", userProducts);
+            model.addAttribute("currentUserEmail", principal.getName());
             return "product-my";
         }
 
         return "redirect:/products";
+    }
+
+    @GetMapping("/products/{id}")
+    public String productDetail(@PathVariable Long id, Model model) {
+        Product product = productService.getProductById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        model.addAttribute("product", product);
+        return "product-detail";
+    }
+
+    @GetMapping("/seller/{userId}")
+    public String getProductsBySeller(@PathVariable Long userId, Model model, Principal principal) {
+        User seller = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Seller not found"));
+
+        List<Product> sellerProducts = productRepository.findByUserId(userId);
+
+        model.addAttribute("products", sellerProducts);
+        model.addAttribute("username", seller.getUsername());
+
+        if (principal != null) {
+            model.addAttribute("currentUserEmail", principal.getName());
+        }
+
+        return "product-seller";
     }
 
 }

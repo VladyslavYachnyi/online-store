@@ -23,7 +23,14 @@ public class UserService {
 
     public User saveUser(User user) {
         System.out.println(">>> Сохраняем пользователя: " + user.getEmail());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        return userRepository.save(user);
+    }
+
+    public User updateProfile(User user) {
         return userRepository.save(user);
     }
 

@@ -8,7 +8,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,9 +42,6 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
-    public void deleteProduct(Long id) {
-        productRepository.deleteById(id);
-    }
 
     public void deleteProductById(Long id) {
         productRepository.deleteById(id);
@@ -74,6 +75,23 @@ public class ProductService {
     public List<Product> getRecentProducts(int limit) {
         Pageable pageable = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "createdAt"));
         return productRepository.findAll(pageable).getContent();
+    }
+
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        if (product.getImagePath() != null && !product.getImagePath().isEmpty()) {
+            // Путь до картинки
+            Path imagePath = Paths.get(product.getImagePath());
+            try {
+                Files.deleteIfExists(imagePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        productRepository.delete(product);
     }
 
 }

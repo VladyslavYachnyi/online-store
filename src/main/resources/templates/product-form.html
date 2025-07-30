@@ -1,16 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Add Product</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-<h2>Add New Product</h2>
-<form method="post" action="/products/add" enctype="multipart/form-data">
-  <label>Name: <input type="text" name="name" required></label><br>
-  <label>Description: <input type="text" name="description" required></label><br>
-  <label>Price: <input type="number" step="0.01" name="price" required></label><br>
-  <label>Image: <input type="file" name="image" accept="image/*"></label><br>
-  <button type="submit">Add Product</button>
-</form>
+
+<header>
+  <nav>
+    <a href="/" class="logo">MyStore</a>
+    <div class="nav-links">
+      <a th:href="@{/products}">All Products</a>
+
+      <th:block th:if="${currentUserEmail}">
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Profile ▼</a>
+          <div class="dropdown-menu">
+            <a th:href="@{/profile}">My Profile</a>
+            <a th:href="@{/products/my}">My Products</a>
+            <a th:href="@{/logout}">Log Out</a>
+          </div>
+        </div>
+      </th:block>
+
+      <th:block th:unless="${currentUserEmail}">
+        <div class="dropdown">
+          <a th:href="@{/login}" class="dropdown-toggle">Profile</a>
+        </div>
+      </th:block>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <h2 style="text-align: center;">Add New Product</h2>
+
+  <form method="post" action="/products/add" enctype="multipart/form-data" class="add-product-form">
+    <div class="form-group">
+      <label>Name</label>
+      <input type="text" name="name" required>
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea name="description" rows="4" required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>Price</label>
+      <input type="number" step="0.01" name="price" required>
+    </div>
+
+    <div class="form-group">
+      <label>Image</label>
+      <input type="file" name="image" accept="image/*">
+    </div>
+
+    <button type="submit" class="btn-submit">Add Product</button>
+  </form>
+</main>
+
+<script>
+  const textarea = document.querySelector('textarea[name="description"]');
+  textarea.addEventListener('input', () => {
+    textarea.style.height = 'auto';
+    textarea.style.height = textarea.scrollHeight + 'px';
+  });
+</script>
+
 </body>
 </html>

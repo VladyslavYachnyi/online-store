@@ -12,16 +12,24 @@
     <a href="/" class="logo">MyStore</a>
 
 
-    <!-- Навигация -->
     <div class="nav-links">
+      <a th:href="@{/products/add}">Add Product</a>
+
       <th:block th:if="${currentUserEmail}">
-        <a th:href="@{/products/add}">Add Product</a>
-        <a th:href="@{/products/my}">My Products</a>
-        <a th:href="@{/dashboard}">Profile</a>
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Profile ▼</a>
+          <div class="dropdown-menu">
+            <a th:href="@{/profile}">My Profile</a>
+            <a th:href="@{/products/my}">My Products</a>
+            <a th:href="@{/logout}">Log Out</a>
+          </div>
+        </div>
       </th:block>
+
       <th:block th:unless="${currentUserEmail}">
-        <a th:href="@{/login}">Add Product</a>
-        <a th:href="@{/login}">Profile</a>
+        <div class="dropdown">
+          <a th:href="@{/login}" class="dropdown-toggle">Profile</a>
+        </div>
       </th:block>
     </div>
   </nav>
@@ -30,7 +38,6 @@
 <main>
   <h2 style="text-align: center;">All Products</h2>
 
-  <!-- Фильтр -->
   <div class="filter-container">
     <form method="get" action="/products">
       <input type="text" name="name" th:value="${name}" placeholder="Name or description">
@@ -47,7 +54,6 @@
     </form>
   </div>
 
-  <!-- Сетка товаров -->
   <div class="product-grid">
     <div class="product-card" th:each="product : ${products}">
       <a th:href="@{'/products/' + ${product.id}}" class="product-link">

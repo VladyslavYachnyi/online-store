@@ -4,9 +4,7 @@ import com.myshop.onlinestore.security.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -27,15 +25,16 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/",                         // главная страница
-                                "/products",                 // список товаров
-                                "/products/{id}",            // детали товара
-                                "/style.css",         // стили и скрипты
-                                "/uploads/**",               // изображения товаров
-                                "/login", "/register",       // логин и регистрация
-                                "/h2-console/**"             // консоль H2 (если используется)
+                                "/",
+                                "/products",
+                                "/products/{id}",
+                                "/style.css",
+                                "/uploads/**",
+                                "/login", "/register",
+                                "/h2-console/**",
+                                "/profile"
                         ).permitAll()
-                        .anyRequest().authenticated()   // все остальное — только для авторизованных
+                        .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -44,7 +43,7 @@ public class SecurityConfig {
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutSuccessUrl("/")
                         .permitAll()
                 )
                 .csrf(csrf -> csrf.disable())

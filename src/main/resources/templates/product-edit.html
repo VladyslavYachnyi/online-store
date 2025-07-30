@@ -1,26 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Edit Product</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-<h2>Edit Product</h2>
 
-<form th:action="@{'/products/edit/' + ${product.id}}"
-      th:object="${product}"
-      method="post"
-      enctype="multipart/form-data">
+<header>
+    <nav>
+        <a class="logo" href="/">MyStore</a>
+        <div class="nav-links">
+            <a th:href="@{/products}">All Products</a>
+            <a th:href="@{/products/add}">Add Product</a>
 
-    <label>Name: <input type="text" th:field="*{name}" required></label><br>
-    <label>Description: <textarea th:field="*{description}" required></textarea></label><br>
-    <label>Price: <input type="number" step="0.01" th:field="*{price}" required></label><br>
+            <th:block th:if="${currentUserEmail}">
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle">Profile ▼</a>
+                    <div class="dropdown-menu">
+                        <a th:href="@{/profile}">My Profile</a>
+                        <a th:href="@{/products/my}">My Products</a>
+                        <a th:href="@{/logout}">Log Out</a>
+                    </div>
+                </div>
+            </th:block>
 
-    <label>Change Image: <input type="file" name="image"></label><br>
+            <th:block th:unless="${currentUserEmail}">
+                <div class="dropdown">
+                    <a th:href="@{/login}" class="dropdown-toggle">Profile</a>
+                </div>
+            </th:block>
+        </div>
+    </nav>
+</header>
 
-    <button type="submit">Save Changes</button>
-</form>
+<main>
+    <h2>Edit Product</h2>
 
-<a href="/products">Back to Products</a>
+    <form th:action="@{'/products/edit/' + ${product.id}}"
+          th:object="${product}"
+          method="post"
+          enctype="multipart/form-data"
+          class="add-product-form">
+
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" th:field="*{name}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <textarea th:field="*{description}" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Price</label>
+            <input type="number" step="0.01" th:field="*{price}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Change Image</label>
+            <input type="file" name="image">
+        </div>
+
+        <button type="submit" class="btn-submit">Save Changes</button>
+    </form>
+</main>
+
 </body>
 </html>

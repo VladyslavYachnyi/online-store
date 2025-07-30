@@ -54,6 +54,6 @@ public class AuthController {
 
     @GetMapping("/dashboard")
     public String showDashboard() {
-        return "dashboard";
+        return "profile";
     }
 }

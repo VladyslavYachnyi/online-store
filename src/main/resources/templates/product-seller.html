@@ -35,9 +35,13 @@
 </header>
 
 <main>
-  <h2 style="text-align: center;">My Products</h2>
+  <h2 style="text-align: center;" th:text="${username + '’s Products'}"></h2>
 
-  <div class="product-grid">
+  <div th:if="${products.isEmpty()}">
+    <p>No products from this seller yet.</p>
+  </div>
+
+  <div class="product-grid" th:unless="${products.isEmpty()}">
     <div class="product-card" th:each="product : ${products}">
       <a th:href="@{'/products/' + ${product.id}}" class="product-link">
         <div class="product-image">
@@ -49,13 +53,6 @@
         </div>
         <div class="product-price" th:text="${product.price + ' $'}">0 $</div>
       </a>
-
-      <div class="product-actions">
-        <form th:action="@{'/products/delete/' + ${product.id}}" method="post">
-          <button type="submit" class="btn-delete">Delete</button>
-        </form>
-        <a th:href="@{'/products/edit/' + ${product.id}}" class="btn-edit">Edit</a>
-      </div>
     </div>
   </div>
 </main>

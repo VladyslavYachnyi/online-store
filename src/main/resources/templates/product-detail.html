@@ -1,18 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
   <title th:text="${product.name}">Product Detail</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-<h2 th:text="${product.name}">Product Name</h2>
+<header>
+  <nav>
+    <a href="/" class="logo">MyStore</a>
+    <div class="nav-links">
+      <a th:href="@{/products}">All Products</a>
+      <a th:href="@{/products/add}">Add Product</a>
+      <div th:if="${currentUserEmail}" class="dropdown">
+        <a href="#" class="dropdown-toggle">Profile ▼</a>
+        <div class="dropdown-menu">
+          <a th:href="@{/profile}">My Profile</a>
+          <a th:href="@{/products/my}">My Products</a>
+          <a th:href="@{/logout}">Log Out</a>
+        </div>
+      </div>
+      <div th:unless="${currentUserEmail}" class="dropdown">
+        <a th:href="@{/login}" class="dropdown-toggle">Profile</a>
+      </div>
+    </div>
+  </nav>
+</header>
 
-<img th:if="${product.imagePath != null}" th:src="@{${product.imagePath}}" alt="Product Image" style="max-width:300px;"><br>
+<main class="product-detail">
+  <div class="product-detail-container">
+    <div class="product-left">
+      <div class="product-detail-image">
+        <img th:src="@{${product.imagePath}}" alt="Product Image">
+      </div>
 
-<p><strong>Description:</strong> <span th:text="${product.description}"></span></p>
-<p><strong>Price:</strong> <span th:text="${product.price}"></span></p>
-<p><strong>Seller:</strong> <span th:text="${product.user.username}"></span></p>
+      <div class="product-description-block">
+        <h3>Description</h3>
+        <p th:text="${product.description}">Product details...</p>
+      </div>
+    </div>
 
-<a href="/products">Back to all products</a>
+    <div class="product-right">
+      <h1 th:text="${product.name}">Product Name</h1>
+      <p class="price" th:text="${product.price + ' $'}">1000 $</p>
+      <p class="date">Published: <span th:text="${#temporals.format(product.createdAt, 'dd MMM yyyy', T(java.util.Locale).ENGLISH)}"></span></p>
+
+      <button class="btn-buy">Contact Seller</button>
+
+      <div class="seller-block">
+        <h4>Seller</h4>
+        <p th:text="${product.user.username}">Username</p>
+        <a th:href="@{'/products/seller/' + ${product.user.id}}" class="btn-seller-products">
+          View Seller's Products
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
 </body>
 </html>
