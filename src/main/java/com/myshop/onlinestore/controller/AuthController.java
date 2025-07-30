@@ -1,5 +1,6 @@
 package com.myshop.onlinestore.controller;
 
+import com.myshop.onlinestore.entity.Role;
 import com.myshop.onlinestore.entity.User;
 import com.myshop.onlinestore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,7 @@ public class AuthController {
         }
 
         User user = new User(username, email, password);
+        user.setRole(Role.ROLE_USER);
         userService.saveUser(user);
 
         return "redirect:/login";

@@ -1,6 +1,7 @@
 package com.myshop.onlinestore.controller;
 
 import com.myshop.onlinestore.entity.Product;
+import com.myshop.onlinestore.entity.Role;
 import com.myshop.onlinestore.entity.User;
 import com.myshop.onlinestore.repository.ProductRepository;
 import com.myshop.onlinestore.repository.UserRepository;
@@ -106,18 +107,29 @@ public class ProductController {
 
         if (productOpt.isPresent()) {
             Product product = productOpt.get();
-            if (product.getUser().getEmail().equals(principal.getName())) {
 
-                if (product.getImagePath() != null) {
-                    Path imagePath = Paths.get("uploads", Paths.get(product.getImagePath()).getFileName().toString());
-                    try {
-                        Files.deleteIfExists(imagePath);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+            Optional<User> currentUserOpt = userService.getUserByEmail(principal.getName());
+            if (currentUserOpt.isPresent()) {
+                User currentUser = currentUserOpt.get();
+
+                if (product.getUser().getEmail().equals(currentUser.getEmail()) ||
+                        currentUser.getRole() == Role.ROLE_ADMIN) {
+
+                    if (product.getImagePath() != null) {
+                        Path imagePath = Paths.get("uploads", Paths.get(product.getImagePath()).getFileName().toString());
+                        try {
+                            Files.deleteIfExists(imagePath);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    productService.deleteProductById(id);
+
+                    if (currentUser.getRole() == Role.ROLE_ADMIN) {
+                        return "redirect:/products";
                     }
                 }
-
-                productService.deleteProductById(id);
             }
         }
 

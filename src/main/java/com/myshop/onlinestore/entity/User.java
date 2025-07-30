@@ -15,6 +15,9 @@ public class User {
     private String phoneNumber;
     private String location;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     public User() {
     }
     
@@ -52,24 +55,18 @@ public class User {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public void setPassword(String password) {this.password = password;}
 
-    public String getLocation() {
-        return location;
-    }
+    public String getLocation() {return location;}
 
-    public void setLocation(String location) {
-        this.location = location;
-    }
+    public void setLocation(String location) {this.location = location;}
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
+    public String getPhoneNumber() {return phoneNumber;}
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
 
-    }
+    public Role getRole() {return role;}
+
+    public void setRole(Role role) {this.role = role;}
+
 }

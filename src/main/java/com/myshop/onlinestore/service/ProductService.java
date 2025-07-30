@@ -55,7 +55,7 @@ public class ProductService {
             case "oldest"    -> productRepository.findByPriceBetweenOrderByCreatedAtAsc(min, max);
             case "priceAsc"  -> productRepository.findByPriceBetweenOrderByPriceAsc(min, max);
             case "priceDesc" -> productRepository.findByPriceBetweenOrderByPriceDesc(min, max);
-            default          -> productRepository.findByPriceBetweenOrderByCreatedAtDesc(min, max); // newest
+            default          -> productRepository.findByPriceBetweenOrderByCreatedAtDesc(min, max);
         };
     }
 
@@ -68,7 +68,7 @@ public class ProductService {
             case "oldest"    -> productRepository.searchByNameOrDescriptionAndPriceBetweenOrderByCreatedAtAsc(keyword, min, max);
             case "priceAsc"  -> productRepository.searchByNameOrDescriptionAndPriceBetweenOrderByPriceAsc(keyword, min, max);
             case "priceDesc" -> productRepository.searchByNameOrDescriptionAndPriceBetweenOrderByPriceDesc(keyword, min, max);
-            default          -> productRepository.searchByNameOrDescriptionAndPriceBetweenOrderByCreatedAtDesc(keyword, min, max); // newest
+            default          -> productRepository.searchByNameOrDescriptionAndPriceBetweenOrderByCreatedAtDesc(keyword, min, max);
         };
     }
 
@@ -82,7 +82,6 @@ public class ProductService {
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         if (product.getImagePath() != null && !product.getImagePath().isEmpty()) {
-            // Путь до картинки
             Path imagePath = Paths.get(product.getImagePath());
             try {
                 Files.deleteIfExists(imagePath);

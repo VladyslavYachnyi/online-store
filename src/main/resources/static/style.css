@@ -616,3 +616,21 @@ main h2 {
 .btn-seller-products:hover {
     background: #00e6c3;
 }
+
+.btn-delete-admin {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #ff4d4d;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+}
+
+.btn-delete-admin:hover {
+    background-color: #e60000;
+}

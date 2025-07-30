@@ -25,7 +25,10 @@
         <div class="dropdown-menu">
           <a th:href="@{/profile}">My Profile</a>
           <a th:href="@{/products/my}">My Products</a>
-          <a th:href="@{/logout}">Log Out</a>
+          <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">Log Out</a>
+          <form id="logoutForm" th:action="@{/logout}" method="post" style="display:none;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+          </form>
         </div>
       </div>
 

@@ -24,16 +24,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/",
-                                "/products",
-                                "/products/{id}",
-                                "/style.css",
-                                "/uploads/**",
-                                "/login", "/register",
-                                "/h2-console/**",
-                                "/profile"
-                        ).permitAll()
+                        .requestMatchers("/", "/products", "/products/*", "/products/seller/**", "/style.css", "/uploads/**", "/login", "/register", "/h2-console/**").permitAll()
+
+                        .requestMatchers("/products/add", "/products/edit/**", "/products/delete/**", "/products/my", "/profile").hasAnyRole("USER", "ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -46,7 +40,7 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 )
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();
