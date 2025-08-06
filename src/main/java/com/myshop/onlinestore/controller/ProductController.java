@@ -1,10 +1,12 @@
 package com.myshop.onlinestore.controller;
 
+import com.myshop.onlinestore.entity.Comment;
 import com.myshop.onlinestore.entity.Product;
 import com.myshop.onlinestore.entity.Role;
 import com.myshop.onlinestore.entity.User;
 import com.myshop.onlinestore.repository.ProductRepository;
 import com.myshop.onlinestore.repository.UserRepository;
+import com.myshop.onlinestore.service.CommentService;
 import com.myshop.onlinestore.service.ProductService;
 import com.myshop.onlinestore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +33,19 @@ public class ProductController {
     private final UserService userService;
     private ProductRepository productRepository;
     private final UserRepository userRepository;
+    private CommentService commentService;
 
     @Autowired
-    public ProductController(ProductService productService, UserService userService, ProductRepository productRepository,  UserRepository userRepository) {
+    public ProductController(ProductService productService,
+                             UserService userService,
+                             ProductRepository productRepository,
+                             UserRepository userRepository,
+                             CommentService commentService) {
         this.productService = productService;
         this.userService = userService;
         this.productRepository = productRepository;
         this.userRepository = userRepository;
+        this.commentService = commentService;
     }
 
     @GetMapping
@@ -181,19 +189,6 @@ public class ProductController {
         return "redirect:/products/my";
     }
 
-    @GetMapping("/{id}")
-    public String viewProductDetails(@PathVariable Long id, Model model, Principal principal) {
-        Product product = productService.getProductById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid product ID: " + id));
-        model.addAttribute("product", product);
-
-        if (principal != null) {
-            model.addAttribute("currentUserEmail", principal.getName());
-        }
-
-        return "product-detail";
-    }
-
     @GetMapping("/my")
     public String viewMyProducts(Model model, Principal principal) {
         if (principal == null) {
@@ -211,11 +206,33 @@ public class ProductController {
         return "redirect:/products";
     }
 
-    @GetMapping("/products/{id}")
-    public String productDetail(@PathVariable Long id, Model model) {
+    @GetMapping("/{id}")
+    public String productDetail(@PathVariable Long id,
+                                @RequestParam(defaultValue = "1") int page,
+                                Model model,
+                                Principal principal) {
         Product product = productService.getProductById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        int pageSize = 10;
+        List<Comment> allComments = commentService.getCommentsByProduct(product);
+
+        int totalComments = allComments.size();
+        int totalPages = (int) Math.ceil((double) totalComments / pageSize);
+
+        int fromIndex = (page - 1) * pageSize;
+        int toIndex = Math.min(fromIndex + pageSize, totalComments);
+        List<Comment> commentsPage = allComments.subList(fromIndex, toIndex);
+
         model.addAttribute("product", product);
+        model.addAttribute("comments", commentsPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", totalPages);
+
+        if (principal != null) {
+            model.addAttribute("currentUserEmail", principal.getName());
+        }
+
         return "product-detail";
     }
 
@@ -234,6 +251,21 @@ public class ProductController {
         }
 
         return "product-seller";
+    }
+
+    @PostMapping("/{id}/comments")
+    public String addComment(@PathVariable Long id,
+                             @RequestParam String text,
+                             Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
+        Product product = productService.getProductById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+        User user = userService.getUserByEmail(principal.getName()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        commentService.addComment(text, user, product);
+
+        return "redirect:/products/" + id;
     }
 
 }
