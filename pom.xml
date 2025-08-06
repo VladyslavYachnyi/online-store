@@ -71,6 +71,11 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.50.1.0</version>
         </dependency>
+        <dependency>
+            <groupId>nz.net.ultraq.thymeleaf</groupId>
+            <artifactId>thymeleaf-layout-dialect</artifactId>
+            <version>3.2.1</version>
+        </dependency>
     </dependencies>
 
     <build>

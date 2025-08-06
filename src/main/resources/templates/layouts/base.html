@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title layout:title-pattern="$CONTENT_TITLE | MyStore">MyStore</title>
+  <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<header>
+  <nav class="nav-bar">
+    <a href="/" class="logo">MyStore</a>
+
+    <th:block layout:fragment="search"></th:block>
+
+    <div class="nav-links">
+      <th:block layout:fragment="main-links">
+        <a th:href="@{/products}" th:unless="${hideAllProducts}">All Products</a>
+        <a th:href="@{/products/add}" th:unless="${hideAddProduct}">Add Product</a>
+      </th:block>
+
+      <th:block th:if="${#authorization.expression('isAuthenticated()')}">
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Profile ▼</a>
+          <div class="dropdown-menu">
+            <a th:href="@{/profile}">My Profile</a>
+            <a th:href="@{/products/my}">My Products</a>
+            <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">Log Out</a>
+            <form id="logoutForm" th:action="@{/logout}" method="post" style="display:none;">
+              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            </form>
+          </div>
+        </div>
+      </th:block>
+
+      <th:block th:unless="${#authorization.expression('isAuthenticated()')}">
+        <div class="dropdown">
+          <a th:href="@{/login}" class="dropdown-toggle">Profile</a>
+        </div>
+      </th:block>
+    </div>
+  </nav>
+</header>
+
+<main layout:fragment="content">
+</main>
+
+</body>
+</html>
