@@ -30,10 +30,6 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
-    }
-
     public List<Product> getProductsByUserId(Long userId) {
         return productRepository.findByUserId(userId);
     }
@@ -47,17 +43,6 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public List<Product> findFilteredAndSorted(BigDecimal min, BigDecimal max, String sort) {
-        if (min == null) min = BigDecimal.ZERO;
-        if (max == null) max = BigDecimal.valueOf(Double.MAX_VALUE);
-
-        return switch (sort) {
-            case "oldest"    -> productRepository.findByPriceBetweenOrderByCreatedAtAsc(min, max);
-            case "priceAsc"  -> productRepository.findByPriceBetweenOrderByPriceAsc(min, max);
-            case "priceDesc" -> productRepository.findByPriceBetweenOrderByPriceDesc(min, max);
-            default          -> productRepository.findByPriceBetweenOrderByCreatedAtDesc(min, max);
-        };
-    }
 
     public List<Product> findFilteredSortedAndSearched(BigDecimal min, BigDecimal max, String sort, String keyword) {
         if (min == null) min = BigDecimal.ZERO;
@@ -77,20 +62,5 @@ public class ProductService {
         return productRepository.findAll(pageable).getContent();
     }
 
-    public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-
-        if (product.getImagePath() != null && !product.getImagePath().isEmpty()) {
-            Path imagePath = Paths.get(product.getImagePath());
-            try {
-                Files.deleteIfExists(imagePath);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        productRepository.delete(product);
-    }
 
 }

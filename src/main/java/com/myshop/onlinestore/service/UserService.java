@@ -22,7 +22,7 @@ public class UserService {
     }
 
     public User saveUser(User user) {
-        System.out.println(">>> Сохраняем пользователя: " + user.getEmail());
+        System.out.println("Save user: " + user.getEmail());
         if (user.getPassword() != null && !user.getPassword().startsWith("$2a$")) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }

@@ -15,12 +15,10 @@ import java.util.Optional;
 public class AuthController {
 
     private final UserService userService;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AuthController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/register")
@@ -34,7 +32,7 @@ public class AuthController {
                                @RequestParam String email,
                                @RequestParam String password,
                                Model model) {
-        System.out.println(">>> REGISTER CALLED <<<");
+        System.out.println("REGISTER DONE");
 
         Optional<User> existingUser = userService.getUserByEmail(email);
         if (existingUser.isPresent()) {
@@ -54,8 +52,4 @@ public class AuthController {
         return "login";
     }
 
-    @GetMapping("/dashboard")
-    public String showDashboard() {
-        return "profile";
-    }
 }

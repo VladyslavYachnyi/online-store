@@ -25,7 +25,7 @@ public class Product {
     @Column(name = "image_filename")
     private String imageFilename;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -41,7 +41,7 @@ public class Product {
         this.description = description;
         this.price = price;
         this.user = user;
-        this.imageFilename = "images/product.jpg";
+        this.imageFilename = imageFilename != null ? imageFilename : "images/product.jpg";
         this.imagePath = imagePath;
     }
 
