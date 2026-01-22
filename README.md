@@ -35,4 +35,5 @@ Simple online store web application built with Spring Boot as a learning project
 ### Run using Maven
 ```bash
 mvn spring-boot:run
-Then open in browser: http://localhost:8080
+```
+Then open in browser: `http://localhost:8080`
